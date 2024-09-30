@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
         switch (opt) {
             case 'h':
                 printHelp();
-                break;
+                return 0;
             case 'f':
                 image->Flip();
                 break;

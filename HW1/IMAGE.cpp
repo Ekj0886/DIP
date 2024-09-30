@@ -9,7 +9,7 @@ using namespace std;
 // functions defined in header file
 
 void IMAGE::LoadImage(string file) {
-    if(!bmp_image.LoadBMP(file)) {
+    if(!bmp_image.LoadBMP(file) && file != "-h") {
         cerr << "Failed to load image" << endl;
         exit(0);
     }
@@ -116,6 +116,7 @@ void IMAGE::Resolution(int ResBit) {
             pixel[i][q].B = pixel[i][q].B & mask;
         }
     }
+    std::cout << "-- Resolution " << ResBit << " " << name << endl; 
 
 }
 
