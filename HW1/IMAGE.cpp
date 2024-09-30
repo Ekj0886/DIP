@@ -49,28 +49,6 @@ void IMAGE::LoadImage(string file) {
 
 }
 
-void IMAGE::PrintPixel() {
-    
-    for(int i = 0; i < H; i++) {
-        for(int q = 0; q < W; q++) {
-            cout << pixel[i][q].R << " ";
-        }cout << endl;
-    }
-    cout << endl << endl;
-    for(int i = 0; i < H; i++) {
-        for(int q = 0; q < W; q++) {
-            cout << pixel[i][q].G << " ";
-        }cout << endl;
-    }
-    cout << endl << endl;
-    for(int i = 0; i < H; i++) {
-        for(int q = 0; q < W; q++) {
-            cout << pixel[i][q].B << " ";
-        }cout << endl;
-    }
-
-}
-
 void IMAGE::DumpImage(string file) {
     vector<uint8_t> new_pixel;
 

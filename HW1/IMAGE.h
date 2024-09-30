@@ -36,7 +36,6 @@ public:
     void DumpImage(string);
     void Flip();
 
-    void PrintPixel();
 
 };
 
