@@ -2,17 +2,17 @@ make
 echo "Compile Done"
 echo ""
 echo "Generate Flipped Image"
-./HW1 -f input1.bmp output1_flip.bmp 
-./HW1 -f input2.bmp output2_flip.bmp
+./HW1 -f input1.bmp output/output1_flip.bmp 
+./HW1 -f input2.bmp output/output2_flip.bmp
 echo ""
 echo "Generate Quantization Resolution Image"
-./HW1 -r 6 input1.bmp output1_1.bmp  
-./HW1 -r 4 input1.bmp output1_2.bmp
-./HW1 -r 3 input1.bmp output1_3.bmp
-./HW1 -r 6 input2.bmp output2_1.bmp  
-./HW1 -r 4 input2.bmp output2_2.bmp
-./HW1 -r 2 input2.bmp output2_3.bmp
+./HW1 -r 6 input1.bmp output/output1_1.bmp  
+./HW1 -r 4 input1.bmp output/output1_2.bmp
+./HW1 -r 3 input1.bmp output/output1_3.bmp
+./HW1 -r 6 input2.bmp output/output2_1.bmp  
+./HW1 -r 4 input2.bmp output/output2_2.bmp
+./HW1 -r 2 input2.bmp output/output2_3.bmp
 echo ""
 echo "Generate Cropped Image"
-./HW1 -c input1.bmp output1_crop.bmp
-./HW1 -c input2.bmp output2_crop.bmp
+./HW1 -c input1.bmp output/output1_crop.bmp
+./HW1 -c input2.bmp output/output2_crop.bmp
