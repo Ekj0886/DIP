@@ -2,9 +2,9 @@
 #ifndef BMP_H
 #define BMP_H
 
-#include <iostream>
-#include <fstream>
-#include <vector>
+#include <bits/stdc++.h>
+
+using namespace std;
 
 #pragma pack(push, 1)  // Disable padding to match BMP file structure
 
@@ -34,9 +34,20 @@ struct BMPInfoHeader {
 
 #pragma pack(pop)  // Restore default padding
 
+class BMP {
 
-// Function for loading a BMP file
+private:
+    BMPFileHeader fileheader;
+    BMPInfoHeader infoheader;
+    vector<uint8_t> BMP_pixel;
 
-bool LoadBMP(const std::string& filePath, BMPFileHeader& fileHeader, BMPInfoHeader& infoHeader, std::vector<uint8_t>& pixelData);
+public:
+    bool LoadBMP(string filePath);
+    int GetW() { return infoheader.width; }    
+    int GetH() { return infoheader.height; }
+    int GetBit() { return infoheader.bitsPerPixel; }
+    vector<uint8_t> GetPixel() { return BMP_pixel; }
+
+};
 
 #endif

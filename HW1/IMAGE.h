@@ -11,18 +11,19 @@ using namespace std;
 class IMAGE {
 
 private:
-    BMPFileHeader fileheader;
-    BMPInfoHeader infoheader;
-    vector<uint8_t> pixel;
+    BMP bmp_image;
+    int W;
+    int H;
+    int bit;
+    vector<uint8_t> pixel[3];
     
 public:
-
     IMAGE() {};
     IMAGE(string file) { LoadImage(file); }
     void LoadImage(string);
-    int GetW() { return infoheader.width; }    
-    int GetH() { return infoheader.height; }
-    int GetBit() { return infoheader.bitsPerPixel; }
+    int GetW() { return W; }    
+    int GetH() { return H; }
+    int GetBit() { return bit; }
     void PrintPixel();
     void Flip();
 

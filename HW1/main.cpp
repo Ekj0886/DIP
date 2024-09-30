@@ -14,7 +14,8 @@ int main(int argc, char *argv[]) {
     string file_name = argv[1];
 
     IMAGE* image = new IMAGE(file_name);
-    // cout << image->GetH() << " " << image->GetW() << " " << image->GetBit() << endl;
+    cout << image->GetH() << " " << image->GetW() << " " << image->GetBit() << endl;
+    image->PrintPixel();
     
     return 0;
 
