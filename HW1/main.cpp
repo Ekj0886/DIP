@@ -14,8 +14,10 @@ int main(int argc, char *argv[]) {
     string file_name = argv[1];
 
     IMAGE* image = new IMAGE(file_name);
-    cout << image->GetH() << " " << image->GetW() << " " << image->GetBit() << endl;
-    
+    image->Flip();
+    image->DumpImage("output.bmp");
+
+
     
     return 0;
 

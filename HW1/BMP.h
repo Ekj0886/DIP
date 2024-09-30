@@ -43,6 +43,8 @@ private:
 
 public:
     bool LoadBMP(string filePath);
+    void UpdatePixel(vector<uint8_t>& new_pixel) { BMP_pixel = new_pixel; }
+    bool DumpImageToBMP(const string& file_name);
     int GetW() { return infoheader.width; }    
     int GetH() { return infoheader.height; }
     int GetBit() { return infoheader.bitsPerPixel; }

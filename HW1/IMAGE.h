@@ -9,28 +9,34 @@
 using namespace std;
 
 struct PIXEL {
-    int R, G, B;
-    PIXEL(int r = 0, int g = 0, int b = 0) : R(r), G(g), B(b) {}
+    int R, G, B, A;
+    PIXEL(int r = 0, int g = 0, int b = 0, int a = 0) : R(r), G(g), B(b), A(a) {}
 };
 
 class IMAGE {
 
 private:
+    string name;
     BMP bmp_image;
+    vector<vector<PIXEL>> pixel;
     int W;
     int H;
     int bit;
-    vector<vector<PIXEL>> pixel;
     
 public:
+    // constructor
     IMAGE() {};
-    IMAGE(string file) { LoadImage(file); }
+    IMAGE(string file) { LoadImage(file); name = file;}
+    
+    // member function
     void LoadImage(string);
     int GetW() { return W; }    
     int GetH() { return H; }
     int GetBit() { return bit; }
-    void PrintPixel();
+    void DumpImage(string);
     void Flip();
+
+    void PrintPixel();
 
 };
 
