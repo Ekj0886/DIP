@@ -15,10 +15,9 @@ int main(int argc, char *argv[]) {
 
     IMAGE* image = new IMAGE(file_name);
     image->Flip();
+    image->Resolution(4);
     image->DumpImage("output.bmp");
 
-
-    
     return 0;
 
 }

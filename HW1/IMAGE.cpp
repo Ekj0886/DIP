@@ -27,18 +27,18 @@ void IMAGE::LoadImage(string file) {
         for (int j = 0; j < W; ++j) {
             if(bmp_image.GetBit() == 24) {
                 // Read RGB values from the raw pixel data
-                int B = raw_data[index++];
-                int G = raw_data[index++];
-                int R = raw_data[index++];
+                uint8_t B = raw_data[index++];
+                uint8_t G = raw_data[index++];
+                uint8_t R = raw_data[index++];
                 // Assign the RGB values to the PIXEL struct
                 pixel[i][j] = PIXEL(R, G, B, 0);
             }
             else {
                 // Read RGB values from the raw pixel data
-                int B = raw_data[index++];
-                int G = raw_data[index++];
-                int R = raw_data[index++];
-                int A = raw_data[index++];
+                uint8_t B = raw_data[index++];
+                uint8_t G = raw_data[index++];
+                uint8_t R = raw_data[index++];
+                uint8_t A = raw_data[index++];
                 // Assign the RGB values to the PIXEL struct
                 pixel[i][j] = PIXEL(R, G, B, A);
             }
@@ -87,5 +87,29 @@ void IMAGE::Flip() {
         }
     }
     cout << "-- Flip Image " << name << endl;
+
+}
+
+void IMAGE::Resolution(int bit) {
+
+    if(bit != 2 && bit != 4 && bit != 6) {
+        cout << "Wrong # of bit" << endl;
+        return;
+    }
+
+    uint8_t mask;
+    switch(bit) {
+        case(2): mask = 0b11000000; break;
+        case(4): mask = 0b11110000; break;
+        case(6): mask = 0b11111100; break;
+    };
+
+    for(int i = 0; i < H; i++) {
+        for(int q = 0; q < W; q++) {
+            pixel[i][q].R = pixel[i][q].R & mask;
+            pixel[i][q].G = pixel[i][q].G & mask;
+            pixel[i][q].B = pixel[i][q].B & mask;
+        }
+    }
 
 }

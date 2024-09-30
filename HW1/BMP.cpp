@@ -73,31 +73,39 @@ bool BMP::DumpImageToBMP(const string& file_name) {
     bmp_file.write(reinterpret_cast<const char*>(&infoheader), sizeof(infoheader));
     // 3. Write pixel data in BGR format
     // Loop through each row, remembering BMP stores pixels from bottom to top
-    if(infoheader.bitsPerPixel == 24) {
-        for (int y = 0; y < abs(infoheader.height); ++y) {
-            for (int x = 0; x < infoheader.width; ++x) {
-                // BMP stores pixels as BGR, so write in reverse order
-                bmp_file.put(BMP_pixel[(y * infoheader.width + x) * 3 + 0]);  // Blue
-                bmp_file.put(BMP_pixel[(y * infoheader.width + x) * 3 + 1]);  // Green
-                bmp_file.put(BMP_pixel[(y * infoheader.width + x) * 3 + 2]);  // Red
+    switch(infoheader.bitsPerPixel) {
+
+        case(24):
+            for (int y = 0; y < abs(infoheader.height); ++y) {
+                for (int x = 0; x < infoheader.width; ++x) {
+                    // BMP stores pixels as BGR, so write in reverse order
+                    bmp_file.put(BMP_pixel[(y * infoheader.width + x) * 3 + 0]);  // Blue
+                    bmp_file.put(BMP_pixel[(y * infoheader.width + x) * 3 + 1]);  // Green
+                    bmp_file.put(BMP_pixel[(y * infoheader.width + x) * 3 + 2]);  // Red
+                }
+                // Write padding for this row
+                bmp_file.write("\0\0\0", row_padding);
             }
-            // Write padding for this row
-            bmp_file.write("\0\0\0", row_padding);
-        }
-    }
-    else {
-        for (int y = 0; y < abs(infoheader.height); ++y) {
-            for (int x = 0; x < infoheader.width; ++x) {
-                // BMP stores pixels as BGR, so write in reverse order
-                bmp_file.put(BMP_pixel[(y * infoheader.width + x) * 4 + 0]);  // Blue
-                bmp_file.put(BMP_pixel[(y * infoheader.width + x) * 4 + 1]);  // Green
-                bmp_file.put(BMP_pixel[(y * infoheader.width + x) * 4 + 2]);  // Red
-                bmp_file.put(BMP_pixel[(y * infoheader.width + x) * 4 + 3]);  // Alpha
+            break;
+
+        case(32):
+            for (int y = 0; y < abs(infoheader.height); ++y) {
+                for (int x = 0; x < infoheader.width; ++x) {
+                    // BMP stores pixels as BGR, so write in reverse order
+                    bmp_file.put(BMP_pixel[(y * infoheader.width + x) * 4 + 0]);  // Blue
+                    bmp_file.put(BMP_pixel[(y * infoheader.width + x) * 4 + 1]);  // Green
+                    bmp_file.put(BMP_pixel[(y * infoheader.width + x) * 4 + 2]);  // Red
+                    bmp_file.put(BMP_pixel[(y * infoheader.width + x) * 4 + 3]);  // Alpha
+                }
+                // Write padding for this row
+                bmp_file.write("\0\0\0\0", row_padding);
             }
-            // Write padding for this row
-            bmp_file.write("\0\0\0\0", row_padding);
-        }
-    }
+            break;
+
+    };
+
+        
+    
 
     // Close the file
     bmp_file.close();

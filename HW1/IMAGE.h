@@ -9,8 +9,8 @@
 using namespace std;
 
 struct PIXEL {
-    int R, G, B, A;
-    PIXEL(int r = 0, int g = 0, int b = 0, int a = 0) : R(r), G(g), B(b), A(a) {}
+    uint8_t R, G, B, A;
+    PIXEL(uint8_t r = 0, uint8_t g = 0, uint8_t b = 0, uint8_t a = 0) : R(r), G(g), B(b), A(a) {}
 };
 
 class IMAGE {
@@ -35,6 +35,7 @@ public:
     int GetBit() { return bit; }
     void DumpImage(string);
     void Flip();
+    void Resolution(int bit);
 
 
 };
