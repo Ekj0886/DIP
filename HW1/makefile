@@ -1,8 +1,8 @@
 CXX = g++
 CXXFLAGS = -std=c++11 -Wall
-EXE = EXE_NAME
-CPP = MAIN_NAME
-HEAD = HEAD_NAME
+EXE = HW1
+CPP = main
+HEAD = IMAGE
 
 all: clean main
 
