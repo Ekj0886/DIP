@@ -8,6 +8,11 @@
 
 using namespace std;
 
+struct PIXEL {
+    int R, G, B;
+    PIXEL(int r = 0, int g = 0, int b = 0) : R(r), G(g), B(b) {}
+};
+
 class IMAGE {
 
 private:
@@ -15,7 +20,7 @@ private:
     int W;
     int H;
     int bit;
-    vector<uint8_t> pixel[3];
+    vector<vector<PIXEL>> pixel;
     
 public:
     IMAGE() {};
