@@ -25,7 +25,7 @@ void IMAGE::LoadImage(string file) {
     int index = 0;  // Index in the raw data array
     for (int i = 0; i < H; ++i) {
         for (int j = 0; j < W; ++j) {
-            if(bmp_image.GetBit() == 24) {
+            if(bit == 24) {
                 // Read RGB values from the raw pixel data
                 uint8_t B = raw_data[index++];
                 uint8_t G = raw_data[index++];
@@ -50,9 +50,11 @@ void IMAGE::LoadImage(string file) {
 }
 
 void IMAGE::DumpImage(string file) {
-    vector<uint8_t> new_pixel;
 
-    if(bmp_image.GetBit() == 24) {
+    bmp_image.UpdateWH(W, H);
+
+    vector<uint8_t> new_pixel;
+    if(bit == 24) {
         for(int i = 0; i < H; i++) {
             for(int q = 0; q < W; q++) {
                 new_pixel.push_back(uint8_t(pixel[i][q].B));
@@ -90,15 +92,15 @@ void IMAGE::Flip() {
 
 }
 
-void IMAGE::Resolution(int bit) {
+void IMAGE::Resolution(int ResBit) {
 
-    if(bit != 2 && bit != 4 && bit != 6) {
-        cout << "Wrong # of bit" << endl;
+    if(ResBit != 2 && ResBit != 4 && ResBit != 6) {
+        cout << "Wrong Resolution Bit num" << endl;
         return;
     }
 
     uint8_t mask;
-    switch(bit) {
+    switch(ResBit) {
         case(2): mask = 0b11000000; break;
         case(4): mask = 0b11110000; break;
         case(6): mask = 0b11111100; break;
@@ -111,5 +113,36 @@ void IMAGE::Resolution(int bit) {
             pixel[i][q].B = pixel[i][q].B & mask;
         }
     }
+
+}
+
+void IMAGE::Crop(int x, int y, int w, int h) {
+
+    if(x < 0 || x > W || y < 0 || y > H) {
+        cout << "-- Crop failed: Coordinates out of bound" << endl;
+        return;
+    } 
+
+    if(w < 0 || h < 0 || x+w > W || y+h > H) {
+        cout << "-- Crop failed: Region out of bound" << endl;
+        return;
+    }
+
+
+    W = w;
+    H = h;
+
+    vector<vector<PIXEL>> new_pixel(H, vector<PIXEL>(W));
+    for(int i = 0; i < h; i++) {
+        for(int q = 0; q < w; q++) {
+
+            new_pixel[i][q] = pixel[y+i][x+q];
+
+        }
+    }
+
+    pixel = new_pixel;
+
+    cout << "-- Crop Image " << name << endl;
 
 }

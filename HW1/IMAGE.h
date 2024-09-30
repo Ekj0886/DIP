@@ -35,8 +35,8 @@ public:
     int GetBit() { return bit; }
     void DumpImage(string);
     void Flip();
-    void Resolution(int bit);
-
+    void Resolution(int ResBit);
+    void Crop(int x, int y, int w, int h);
 
 };
 

@@ -14,8 +14,9 @@ int main(int argc, char *argv[]) {
     string file_name = argv[1];
 
     IMAGE* image = new IMAGE(file_name);
-    image->Flip();
-    image->Resolution(4);
+    // image->Flip();
+    // image->Resolution(4);
+    image->Crop(0, 0, 40, 39);
     image->DumpImage("output.bmp");
 
     return 0;
