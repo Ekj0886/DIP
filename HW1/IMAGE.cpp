@@ -48,7 +48,7 @@ void IMAGE::LoadImage(string file) {
         }
     }
 
-    cout << "-- Load Image " << file << endl;
+    std::cout << "-- Load Image " << file << endl;
 
 }
 
@@ -78,7 +78,7 @@ void IMAGE::DumpImage(string file) {
     }
     bmp_image.UpdatePixel(new_pixel);
     bmp_image.DumpImageToBMP(file);
-    cout << "-- Dump Image " << name << " to " << file << endl;
+    std::cout << "-- Dump Image " << name << " to " << file << endl;
 }
 
 void IMAGE::Flip() {
@@ -91,14 +91,14 @@ void IMAGE::Flip() {
             pixel[i][W-q-1] = temp;
         }
     }
-    cout << "-- Flip Image " << name << endl;
+    std::cout << "-- Flip Image " << name << endl;
 
 }
 
 void IMAGE::Resolution(int ResBit) {
 
     if(ResBit != 2 && ResBit != 4 && ResBit != 6) {
-        cout << "-- Wrong Resolution Bit num, cancel cropping" << endl;
+        std::cout << "-- Wrong Resolution Bit num, cancel cropping" << endl;
         return;
     }
 
@@ -122,12 +122,12 @@ void IMAGE::Resolution(int ResBit) {
 void IMAGE::Crop(int x, int y, int w, int h) {
 
     if(x < 0 || x > W || y < 0 || y > H) {
-        cout << "-- Crop failed: Coordinates out of bound" << endl;
+        std::cout << "-- Crop failed: Coordinates out of bound" << endl;
         return;
     } 
 
     if(w < 0 || h < 0 || x+w > W || y+h > H) {
-        cout << "-- Crop failed: Region out of bound" << endl;
+        std::cout << "-- Crop failed: Region out of bound" << endl;
         return;
     }
 
