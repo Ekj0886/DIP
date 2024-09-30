@@ -8,13 +8,13 @@ using namespace std;
 
 int main(int argc, char *argv[]) {
 
-    ifstream infile (argv[1]);
+    // ifstream infile (argv[1]);
     // ofstream outfile(argv[2]);
 
-    string file_name;
-    infile >> file_name;
+    string file_name = argv[1];
 
-    IMAGE image(file_name);
+    IMAGE* image = new IMAGE(file_name);
+    // cout << image->GetH() << " " << image->GetW() << " " << image->GetBit() << endl;
     
     return 0;
 

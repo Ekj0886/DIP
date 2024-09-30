@@ -1,5 +1,5 @@
-#ifndef HEADER_H
-#define HEADER_H
+#ifndef IMAGE_H
+#define IMAGE_H
 #include <bits/stdc++.h>
 #include "BMP.h"
 
@@ -23,6 +23,8 @@ public:
     int GetW() { return infoheader.width; }    
     int GetH() { return infoheader.height; }
     int GetBit() { return infoheader.bitsPerPixel; }
+    void PrintPixel();
+    void Flip();
 
 };
 
