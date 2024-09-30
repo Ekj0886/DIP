@@ -2,7 +2,7 @@ DIP HW1 313510171
 
 There're two ways to run this code
 
--- Run by command:
+-- Run by command: Self defined command with different options(option can be stacked)
 1. $make
 2. $./HW1 <option 1> <option 2> ... <option N> <input> <output>
 
@@ -17,7 +17,7 @@ e.g.  $./HW1 -f input1.bmp output.bmp
 
 
 
--- Run by shell script: (Generate all the requirment image for HW1)
+-- Run by shell script(Recommanded): Generate all the requirment image for HW1
 1. $chmod +x run
 2. $./run 
 
