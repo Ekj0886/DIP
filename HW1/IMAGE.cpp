@@ -9,7 +9,10 @@ using namespace std;
 // functions defined in header file
 
 void IMAGE::LoadImage(string file) {
-    if(!bmp_image.LoadBMP(file)) cerr << "Failed to load image" << endl;
+    if(!bmp_image.LoadBMP(file)) {
+        cerr << "Failed to load image" << endl;
+        exit(0);
+    }
 
     W = bmp_image.GetW();
     H = bmp_image.GetH();
@@ -95,7 +98,7 @@ void IMAGE::Flip() {
 void IMAGE::Resolution(int ResBit) {
 
     if(ResBit != 2 && ResBit != 4 && ResBit != 6) {
-        cout << "Wrong Resolution Bit num" << endl;
+        cout << "-- Wrong Resolution Bit num, cancel cropping" << endl;
         return;
     }
 
@@ -142,7 +145,5 @@ void IMAGE::Crop(int x, int y, int w, int h) {
     }
 
     pixel = new_pixel;
-
-    cout << "-- Crop Image " << name << endl;
 
 }

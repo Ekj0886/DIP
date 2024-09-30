@@ -20,7 +20,7 @@ bool BMP::LoadBMP(string filePath) {
 
     // Check if the file is a valid BMP file
     if (fileheader.fileType != 0x4D42) {  // 'BM' in little-endian
-        std::cerr << "Not a valid BMP file!" << std::endl;
+        std::cerr << "Not a valid BMP file" << std::endl;
         return false;
     }
 
