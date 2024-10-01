@@ -9,6 +9,7 @@ using namespace std;
 // functions defined in header file
 
 bool BMP::LoadBMP(string filePath) {
+
     std::ifstream file(filePath, std::ios::binary);
     if (!file) {
         std::cerr << "Error opening file: " << filePath << std::endl;

@@ -1,22 +1,46 @@
+# Compiler and flags
 CXX = g++
-CXXFLAGS = -std=c++11 -Wall
-EXE = HW1
-CPP = main
-HEAD = IMAGE
+CXXFLAGS = -std=c++11 -Wall -I$(INCDIR)
 
-all: clean main
+# Directories
+SRCDIR = src
+OBJDIR = obj
+INCDIR = inc
 
-main: $(CPP).o $(HEAD).o BMP.o
-	$(CXX) $(CXXFLAGS) $(CPP).o $(HEAD).o BMP.o -o $(EXE)
+# Source and object files
+SRCS = $(wildcard $(SRCDIR)/*.cpp) main.cpp
+OBJS = $(patsubst %.cpp, $(OBJDIR)/%.o, $(notdir $(SRCS)))
 
-$(CPP).o: $(CPP).cpp $(HEAD).h
-	$(CXX) $(CXXFLAGS) -c $(CPP).cpp
+# Dependency files
+DEPS = $(patsubst %.cpp, $(OBJDIR)/%.d, $(notdir $(SRCS)))
 
-$(HEAD).o: $(HEAD).cpp $(HEAD).h 
-	$(CXX) $(CXXFLAGS) -c $(HEAD).cpp
+# Name of the executable
+TARGET = HW1
 
-BMP.o: BMP.cpp BMP.h
-	$(CXX) $(CXXFLAGS) -c BMP.cpp
+# Default rule
+all: $(TARGET)
 
+# Rule to create object directory if it doesn't exist
+$(OBJDIR):
+	@mkdir -p $(OBJDIR)
+
+# Rule to build the target executable
+$(TARGET): $(OBJS) | $(OBJDIR)
+	$(CXX) $(CXXFLAGS) $(OBJS) -o $(TARGET)
+
+# Rule to compile object files from source files
+$(OBJDIR)/%.o: $(SRCDIR)/%.cpp | $(OBJDIR)
+	$(CXX) $(CXXFLAGS) -MMD -c $< -o $@
+
+# Rule to compile the main file
+$(OBJDIR)/main.o: main.cpp | $(OBJDIR)
+	$(CXX) $(CXXFLAGS) -MMD -c $< -o $@
+
+# Include dependency files
+-include $(DEPS)
+
+# Clean rule
 clean:
-	rm -rf *.o $(EXE)
+	rm -rf $(OBJDIR) $(TARGET)
+
+# Phony targets
