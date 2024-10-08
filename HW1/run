@@ -8,7 +8,7 @@ echo ""
 echo "Generate Quantization Resolution Image"
 ./HW1 -r 6 input/input1.bmp output/output1_1.bmp  
 ./HW1 -r 4 input/input1.bmp output/output1_2.bmp
-./HW1 -r 3 input/input1.bmp output/output1_3.bmp
+./HW1 -r 2 input/input1.bmp output/output1_3.bmp
 ./HW1 -r 6 input/input2.bmp output/output2_1.bmp  
 ./HW1 -r 4 input/input2.bmp output/output2_2.bmp
 ./HW1 -r 2 input/input2.bmp output/output2_3.bmp
