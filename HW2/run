@@ -1,0 +1,5 @@
+make
+echo "Compile Done"
+echo ""
+echo "Generate Brighter Image"
+./HW2 -l input/input1.bmp output/output1.bmp
