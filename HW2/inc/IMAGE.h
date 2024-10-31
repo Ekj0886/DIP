@@ -27,7 +27,7 @@ private:
 public:
     // constructor
     IMAGE() {};
-    IMAGE(string file) { LoadImage(file); name = file;}
+    IMAGE(string file) { LoadImage(file); name = file; To_YCbCr(); }
     
     // member function
     void LoadImage(string);
@@ -37,13 +37,21 @@ public:
     double Clamp(double, double, double);
     void To_YCbCr();
     void To_RGB();
+    void To_Gray();
     void DumpImage(string);
+    vector<vector<PIXEL>>& GetPixel() { return pixel; }
 
-    // Add new function here
+    // new image function
+    void GaussianBlur(int k, double sigma);
+
+    // Add new image operation here
     void Flip();
     void Resolution(int ResBit);
     void Crop(int x, int y, int w, int h);
-    void IncreaseLuma();
+    void EnhanceLuma();
+    void EnhanceSharpness(int);
+    void MedianFilter(int);
+    void SSIM(IMAGE*);
 
 };
 

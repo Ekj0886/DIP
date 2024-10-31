@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
 #include "IMAGE.h"
+#include "SSIM.h"
 
 #define F first 
 #define S second
@@ -98,6 +99,29 @@ void IMAGE::To_RGB() {
         }
     }
 }
+
+void IMAGE::To_Gray() {
+    for (int i = 0; i < H; i++) {
+        for (int j = 0; j < W; j++) {
+
+            pixel[i][j].Y  = Clamp(pixel[i][j].Y, 0, 255);
+            double Y  = static_cast<double>(pixel[i][j].Y);
+            double Cb = 0;
+            double Cr = 0;
+
+            // Convert YCbCr back to RGB with precise coefficients
+            int R = static_cast<int>(Y + 1.402 * Cr);
+            int G = static_cast<int>(Y - 0.344136 * Cb - 0.714136 * Cr);
+            int B = static_cast<int>(Y + 1.772 * Cb);
+
+            // Clamp and assign back to the pixel
+            pixel[i][j].R = static_cast<uint8_t>(std::min(255, std::max(0, R)));
+            pixel[i][j].G = static_cast<uint8_t>(std::min(255, std::max(0, G)));
+            pixel[i][j].B = static_cast<uint8_t>(std::min(255, std::max(0, B)));
+        }
+    }
+}
+
 
 
 void IMAGE::DumpImage(string file) {
@@ -201,12 +225,140 @@ double sigmoid(double x, double alpha, double beta) {
     return 1 / (1 + exp(-alpha * (x - beta)));
 }
 
-void IMAGE::IncreaseLuma() {
-    To_YCbCr();
+
+void IMAGE::GaussianBlur(int k, double sigma) {
+
+    // Generate 1D Gaussian kernel
+    vector<double> kernel(k); 
+    k /= 2;
+    double total = 0;
+    for(int i = -k; i <= k; i++) {
+        kernel[i+k] = exp(-1 * (i * i) / (2 * sigma * sigma) );
+        total += kernel[i+k];
+    }
+
+    for(auto& kernel_value : kernel) {
+        kernel_value /= total;
+    }
+
+    // Perform horizontal convolution 
+    for(int i = 0; i < H; i++) {
+        for(int j = 0; j < W; j++) {
+            
+            double Xconv = 0;
+            double Xsum = 0; 
+            for(int r = -k; r <= k; r++) {
+                int x = r + j;
+                int y = i;
+
+                if(x < 0 || y < 0 || x >= W || y >= H) continue; // zero padding
+                
+                Xconv += pixel[y][x].Y * kernel[r + k];
+                Xsum += kernel[r + k];
+            }
+
+            pixel[i][j].Y = Xconv / Xsum;
+            pixel[i][j].Y  = Clamp(pixel[i][j].Y, 0, 255);
+        }
+    }
+
+    // Perform vertical convolution 
+    for(int i = 0; i < H; i++) {
+        for(int j = 0; j < W; j++) {
+            
+            double Yconv = 0;
+            double Ysum = 0;
+            for(int r = -k; r <= k; r++) {
+                int x = j;
+                int y = r + i;
+
+                if(x < 0 || y < 0 || x >= W || y >= H) continue; // zero padding
+                
+                Yconv += pixel[y][x].Y * kernel[r + k];
+                Ysum += kernel[r + k];
+            }
+
+            pixel[i][j].Y = Yconv / Ysum;
+            pixel[i][j].Y  = Clamp(pixel[i][j].Y, 0, 255);
+        }
+    }
+
+
+}
+
+void IMAGE::EnhanceLuma() {
     for(int i = 0; i < H; i++) {
         for(int j = 0; j < W; j++) {
             pixel[i][j].Y += 35 * (255-pixel[i][j].Y)/255;
         }
     }
     To_RGB();
+}
+
+void IMAGE::EnhanceSharpness(int level) {
+    IMAGE LPF_Image = *this;
+    LPF_Image.GaussianBlur(13, 1);
+    for(int i = 0; i < H; i++) {
+        for(int j = 0; j < W; j++) {
+            pixel[i][j].Y += level * (pixel[i][j].Y - LPF_Image.pixel[i][j].Y);
+        }
+    }
+    To_RGB();
+}
+
+
+
+bool comp (const PIXEL &a, const PIXEL &b) {
+    return a.Y < b.Y;    // ascending order
+    // return a.value > b.value; // descending order
+}
+
+
+void IMAGE::MedianFilter(int k_size) {
+
+    int r = k_size / 2;
+    for(int i = 0; i < H; i++) {
+        for(int j = 0; j < W; j++) {
+
+            vector<PIXEL> kernel;
+            for(int y = -r; y <= r; y++) {
+                for(int x = -r; x <= r; x++) {
+                    int Y = i + y;
+                    int X = j + x;
+                    if(Y >= 0 && X >= 0 && Y < H && X < W) { 
+                        kernel.push_back(pixel[Y][X]);
+                    }
+                }
+            }
+            sort(kernel.begin(), kernel.end(), comp);
+            PIXEL med = kernel[kernel.size() / 2];
+
+            pixel[i][j] = med;
+        }
+    }
+    To_RGB();
+}
+
+// Main SSIM calculation over the whole image using Y channel
+void IMAGE::SSIM(IMAGE* origin_image) {
+    std::vector<std::vector<PIXEL>> origin = origin_image->GetPixel();
+
+    int patchSize = 11;
+    int numPatches = 0;
+    double ssimSum = 0.0;
+
+    // Slide the window over the image
+    for (int y = 0; y <= H - patchSize; y += patchSize) {
+        for (int x = 0; x <= W - patchSize; x += patchSize) {
+            // Calculate SSIM for Y channel and sum up
+            ssimSum += calculateSSIMForY(pixel, origin, x, y, patchSize);
+            ++numPatches;
+        }
+    }
+
+    // Average SSIM for Y channel
+    double ssimY = ssimSum / numPatches;
+
+    // Output SSIM score
+    std::cout << "-- SSIM Score (Y channel): " << ssimY << std::endl;
 }
