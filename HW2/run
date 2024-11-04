@@ -1,12 +1,17 @@
 make
 echo "Compile Done"
 echo ""
-# echo "Generate Brighter Image"
-# ./HW2 -l input/input1.bmp output/output1.bmp
-# echo "Generate Sharper Image"
-# ./HW2 -s 5 input/input2.bmp output/output2_1.bmp
-# ./HW2 -s 10 input/input2.bmp output/output2_2.bmp
+echo "Generate Brighter Image"
+./HW2 -l 0.6 input/input1.bmp output/output1.bmp
+echo ""
+echo "Generate Sharper Image"
+./HW2 -s 5 input/input2.bmp output/output2_1.bmp
+./HW2 -s 10 input/input2.bmp output/output2_2.bmp
+echo ""
 echo "Generate denoise image (median filter) "
 ./HW2 -o input/input3_org.bmp -m 3 -e input/input3.bmp output/output3_1.bmp
 ./HW2 -o input/input3_org.bmp -m 3 -s 1 -e input/input3.bmp output/output3_2.bmp
-# ./HW2 -m 11 input/input3.bmp output/output3_2.bmp
+echo ""
+echo "Generate denoise image (Gaussian Smooth)"
+./HW2 -o input/input4_org.bmp -g 0 -m 3 -m 3 -e input/input4.bmp output/output4_1.bmp
+./HW2 -o input/input4_org.bmp -g 1 -m 3 -m 3 -e input/input4.bmp output/output4_2.bmp

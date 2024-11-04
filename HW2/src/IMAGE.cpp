@@ -283,13 +283,77 @@ void IMAGE::GaussianBlur(int k, double sigma) {
         }
     }
 
-
+    To_RGB();
 }
 
-void IMAGE::EnhanceLuma() {
+void IMAGE::GaussianRGB(int k, double sigma) {
+    // Generate 1D Gaussian kernel
+    vector<double> kernel(k); 
+    k /= 2;
+    double total = 0;
+    for (int i = -k; i <= k; i++) {
+        kernel[i + k] = exp(-1 * (i * i) / (2 * sigma * sigma));
+        total += kernel[i + k];
+    }
+    for (auto& kernel_value : kernel) {
+        kernel_value /= total;
+    }
+
+    // Perform horizontal convolution on R, G, and B channels
+    for (int i = 0; i < H; i++) {
+        for (int j = 0; j < W; j++) {
+            double Rconv = 0, Gconv = 0, Bconv = 0;
+            double Xsum = 0;
+
+            for (int r = -k; r <= k; r++) {
+                int x = r + j;
+                int y = i;
+
+                if (x < 0 || x >= W || y < 0 || y >= H) continue; // zero padding
+
+                Rconv += pixel[y][x].R * kernel[r + k];
+                Gconv += pixel[y][x].G * kernel[r + k];
+                Bconv += pixel[y][x].B * kernel[r + k];
+                Xsum += kernel[r + k];
+            }
+
+            pixel[i][j].R = Clamp(Rconv / Xsum, 0, 255);
+            pixel[i][j].G = Clamp(Gconv / Xsum, 0, 255);
+            pixel[i][j].B = Clamp(Bconv / Xsum, 0, 255);
+        }
+    }
+
+    // Perform vertical convolution on R, G, and B channels
+    for (int i = 0; i < H; i++) {
+        for (int j = 0; j < W; j++) {
+            double Rconv = 0, Gconv = 0, Bconv = 0;
+            double Ysum = 0;
+
+            for (int r = -k; r <= k; r++) {
+                int x = j;
+                int y = r + i;
+
+                if (x < 0 || x >= W || y < 0 || y >= H) continue; // zero padding
+
+                Rconv += pixel[y][x].R * kernel[r + k];
+                Gconv += pixel[y][x].G * kernel[r + k];
+                Bconv += pixel[y][x].B * kernel[r + k];
+                Ysum += kernel[r + k];
+            }
+
+            pixel[i][j].R = Clamp(Rconv / Ysum, 0, 255);
+            pixel[i][j].G = Clamp(Gconv / Ysum, 0, 255);
+            pixel[i][j].B = Clamp(Bconv / Ysum, 0, 255);
+        }
+    }
+    To_YCbCr();
+}
+
+
+void IMAGE::EnhanceLuma(double gamma) {
     for(int i = 0; i < H; i++) {
         for(int j = 0; j < W; j++) {
-            pixel[i][j].Y += 35 * (255-pixel[i][j].Y)/255;
+            pixel[i][j].Y = 255 * pow(pixel[i][j].Y / 255, gamma);
         }
     }
     To_RGB();
@@ -301,6 +365,7 @@ void IMAGE::EnhanceSharpness(int level) {
     for(int i = 0; i < H; i++) {
         for(int j = 0; j < W; j++) {
             pixel[i][j].Y += level * (pixel[i][j].Y - LPF_Image.pixel[i][j].Y);
+            // pixel[i][j].Y = (3*level)*(pixel[i][j].Y - LPF_Image.pixel[i][j].Y);
         }
     }
     To_RGB();
@@ -313,6 +378,20 @@ bool comp (const PIXEL &a, const PIXEL &b) {
     // return a.value > b.value; // descending order
 }
 
+bool compR (const PIXEL &a, const PIXEL &b) {
+    return a.R < b.R;    // ascending order
+    // return a.value > b.value; // descending order
+}
+
+bool compG (const PIXEL &a, const PIXEL &b) {
+    return a.G < b.G;    // ascending order
+    // return a.value > b.value; // descending order
+}
+
+bool compB (const PIXEL &a, const PIXEL &b) {
+    return a.B < b.B;    // ascending order
+    // return a.value > b.value; // descending order
+}
 
 void IMAGE::MedianFilter(int k_size) {
 

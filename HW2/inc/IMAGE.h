@@ -48,10 +48,12 @@ public:
     void Flip();
     void Resolution(int ResBit);
     void Crop(int x, int y, int w, int h);
-    void EnhanceLuma();
+    void EnhanceLuma(double);
     void EnhanceSharpness(int);
     void MedianFilter(int);
+    void GaussianRGB(int k, double sigma);
     void SSIM(IMAGE*);
+    void AdaptiveLocalNoiseReduction(int windowSize, double noiseVariance);
 
 };
 
