@@ -54,7 +54,8 @@ public:
     void MedianFilter(int);
     void GaussianRGB(int k, double sigma);
     void SSIM(IMAGE*);
-    void WhiteBalance(int);
+    void ShadesGrey(int);
+    void MaxRGB();
     void Saturation(float);
     void Warm();
     void Cold();

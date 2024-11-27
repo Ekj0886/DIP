@@ -354,7 +354,7 @@ void IMAGE::EnhanceLuma(double gamma) {
     To_YCbCr();
     for(int i = 0; i < H; i++) {
         for(int j = 0; j < W; j++) {
-            pixel[i][j].Y = 255 * pow(pixel[i][j].Y / 255, gamma);
+            pixel[i][j].Y = Clamp( 255 * pow(pixel[i][j].Y / 255, gamma), 0, 255 );
         }
     }
     To_RGB();
@@ -427,21 +427,21 @@ void IMAGE::SSIM(IMAGE* origin_image) {
     std::cout << "-- SSIM Score (Y channel): " << ssimY << std::endl;
 }
 
-void IMAGE::WhiteBalance(int n) {
+void IMAGE::ShadesGrey(int n) {
 
 
-    // int thres = 210;    
+    int thres = 210;    
     double Y_norm = 0, R_norm = 0, G_norm = 0, B_norm = 0;
     for(int i = 0; i < H; i++) {
         for(int j = 0; j < W; j++) {
-            // int R = pixel[i][j].R;
-            // int G = pixel[i][j].G;
-            // int B = pixel[i][j].B;
-            // if(R < thres && G < thres && B < thres) {
+            int R = pixel[i][j].R;
+            int G = pixel[i][j].G;
+            int B = pixel[i][j].B;
+            if(R < thres && G < thres && B < thres) {
                 R_norm += pow(pixel[i][j].R, n);
                 G_norm += pow(pixel[i][j].G, n);
                 B_norm += pow(pixel[i][j].B, n);
-            // }
+            }
         }
     }
     
@@ -469,6 +469,30 @@ void IMAGE::Saturation(float factor) {
         }
     }
     To_RGB();
+}
+
+void IMAGE::MaxRGB() {
+
+    int R_max = 0, G_max = 0, B_max = 0, max_ave;
+    
+    for(int i = 0; i < H; i++) {
+        for(int j = 0; j < W; j++) {
+            R_max = max((int)pixel[i][j].R, R_max);
+            G_max = max((int)pixel[i][j].G, G_max);
+            B_max = max((int)pixel[i][j].B, B_max);
+        }
+    }
+    
+    max_ave = (R_max + G_max + B_max) / 3;
+
+    for(int i = 0; i < H; i++) {
+        for(int j = 0; j < W; j++) {
+            pixel[i][j].R = Clamp( pixel[i][j].R * max_ave / R_max, 0, 255 );
+            pixel[i][j].G = Clamp( pixel[i][j].G * max_ave / G_max, 0, 255 );
+            pixel[i][j].B = Clamp( pixel[i][j].B * max_ave / B_max, 0, 255 );
+        }
+    }
+
 }
 
 void IMAGE::EqualizeHistogram() {

@@ -31,7 +31,8 @@ int main(int argc, char *argv[]) {
         {"median",     required_argument, nullptr, 'm'},
         {"evaluate",   no_argument,       nullptr, 'e'},
         {"gaussian",   required_argument, nullptr, 'g'},
-        {"WBalance",   required_argument, nullptr, 'w'},
+        {"ShadesGrey", required_argument, nullptr, 'a'},
+        {"MaxRGB",     no_argument,       nullptr, 'x'},
         {"Saturate",   required_argument, nullptr, 'b'},
         {"Equal",      no_argument,       nullptr, 'q'},
         {"Warm",       required_argument, nullptr, 'h'},
@@ -81,9 +82,13 @@ int main(int argc, char *argv[]) {
                 cout << "-- Histogram equalization" << endl;
                 image->EqualizeHistogram();
                 break;
-            case 'w':
-                cout << "-- White Balance" << endl;
-                image->WhiteBalance(atoi(optarg));
+            case 'a':
+                cout << "-- Apply Shades of Grey" << endl;
+                image->ShadesGrey(atoi(optarg));
+                break;
+            case 'x':
+                cout << "-- Apply MaxRGB" << endl;
+                image->MaxRGB();
                 break;
             case 'b':
                 cout << "-- Saturation Enhancement" << endl;
