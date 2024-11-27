@@ -351,6 +351,7 @@ void IMAGE::GaussianRGB(int k, double sigma) {
 
 
 void IMAGE::EnhanceLuma(double gamma) {
+    To_YCbCr();
     for(int i = 0; i < H; i++) {
         for(int j = 0; j < W; j++) {
             pixel[i][j].Y = 255 * pow(pixel[i][j].Y / 255, gamma);
@@ -371,27 +372,11 @@ void IMAGE::EnhanceSharpness(int level) {
     To_RGB();
 }
 
-
-
 bool comp (const PIXEL &a, const PIXEL &b) {
     return a.Y < b.Y;    // ascending order
     // return a.value > b.value; // descending order
 }
 
-bool compR (const PIXEL &a, const PIXEL &b) {
-    return a.R < b.R;    // ascending order
-    // return a.value > b.value; // descending order
-}
-
-bool compG (const PIXEL &a, const PIXEL &b) {
-    return a.G < b.G;    // ascending order
-    // return a.value > b.value; // descending order
-}
-
-bool compB (const PIXEL &a, const PIXEL &b) {
-    return a.B < b.B;    // ascending order
-    // return a.value > b.value; // descending order
-}
 
 void IMAGE::MedianFilter(int k_size) {
 
@@ -442,8 +427,103 @@ void IMAGE::SSIM(IMAGE* origin_image) {
     std::cout << "-- SSIM Score (Y channel): " << ssimY << std::endl;
 }
 
-void IMAGE::WhiteBalance() {
-    
-    
+void IMAGE::WhiteBalance(int n) {
 
+
+    // int thres = 210;    
+    double Y_norm = 0, R_norm = 0, G_norm = 0, B_norm = 0;
+    for(int i = 0; i < H; i++) {
+        for(int j = 0; j < W; j++) {
+            // int R = pixel[i][j].R;
+            // int G = pixel[i][j].G;
+            // int B = pixel[i][j].B;
+            // if(R < thres && G < thres && B < thres) {
+                R_norm += pow(pixel[i][j].R, n);
+                G_norm += pow(pixel[i][j].G, n);
+                B_norm += pow(pixel[i][j].B, n);
+            // }
+        }
+    }
+    
+    R_norm = pow(R_norm, 1.0/n);
+    G_norm = pow(G_norm, 1.0/n);
+    B_norm = pow(B_norm, 1.0/n);
+    Y_norm = (R_norm + B_norm + G_norm) / 3.0;
+
+    for(int i = 0; i < H; i++) {
+        for(int j = 0; j < W; j++) {
+            pixel[i][j].R = Clamp((pixel[i][j].R * Y_norm ) / R_norm, 0, 255);
+            pixel[i][j].G = Clamp((pixel[i][j].G * Y_norm ) / G_norm, 0, 255);
+            pixel[i][j].B = Clamp((pixel[i][j].B * Y_norm ) / B_norm, 0, 255);
+        }
+    }
+    
+}
+
+void IMAGE::Saturation(float factor) {
+    To_YCbCr();
+    for(int i = 0; i < H; i++) {
+        for(int j = 0; j < W; j++) {
+            pixel[i][j].Cb = Clamp( (pixel[i][j].Cb - 128)*factor + 128, 0, 255 ); 
+            pixel[i][j].Cr = Clamp( (pixel[i][j].Cr - 128)*factor + 128, 0, 255 ); 
+        }
+    }
+    To_RGB();
+}
+
+void IMAGE::EqualizeHistogram() {
+    
+    To_YCbCr();
+    
+    vector<int> Histogram(256, 0);
+    vector<int> CDF(256, 0);
+    vector<int> Equal(256, 0);
+
+    // compute Histogram
+    for(int i = 0; i < H; i++) {
+        for(int j = 0; j < W; j++) {
+            Histogram[pixel[i][j].Y]++;
+        }
+    }
+
+    // compute & normalize CDF
+    CDF[0] = Histogram[0];
+    for(int i = 1; i < 256; i++) {
+        CDF[i] += CDF[i-1] + Histogram[i];
+    }
+
+    int CDF_min = *min_element(CDF.begin(), CDF.end());
+    for(int i = 0; i < 256; i++) {
+        Equal[i] = round( (double)(CDF[i] - CDF_min) / (H*W - CDF_min) * 255 );
+    }
+
+    // Apply on Y channel
+    for(int i = 0; i < H; i++) {
+        for(int j = 0; j < W; j++) {
+            pixel[i][j].Y = Equal[pixel[i][j].Y];
+        }
+    }
+
+    To_RGB();
+    
+}
+
+void IMAGE::Warm() {
+    for(int i = 0; i < H; i++) {
+        for(int j = 0; j < W; j++) {
+            pixel[i][j].R = Clamp((pixel[i][j].R * 1.2 ), 0, 255);
+            pixel[i][j].G = Clamp((pixel[i][j].G * 1.05 ), 0, 255);
+            pixel[i][j].B = Clamp((pixel[i][j].B * 0.8 ), 0, 255);
+        }
+    }
+}
+
+void IMAGE::Cold() {
+    for(int i = 0; i < H; i++) {
+        for(int j = 0; j < W; j++) {
+            pixel[i][j].R = Clamp((pixel[i][j].R * 0.8 ), 0, 255);
+            pixel[i][j].G = Clamp((pixel[i][j].G * 1.05 ), 0, 255);
+            pixel[i][j].B = Clamp((pixel[i][j].B * 1.2 ), 0, 255);
+        }
+    }
 }

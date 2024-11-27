@@ -7,6 +7,8 @@
 
 using namespace std;
 
+
+
 int main(int argc, char *argv[]) {
 
     if(argc < 2) {
@@ -29,12 +31,16 @@ int main(int argc, char *argv[]) {
         {"median",     required_argument, nullptr, 'm'},
         {"evaluate",   no_argument,       nullptr, 'e'},
         {"gaussian",   required_argument, nullptr, 'g'},
-        {"WBalance",   no_argument,       nullptr, 'w'},
+        {"WBalance",   required_argument, nullptr, 'w'},
+        {"Saturate",   required_argument, nullptr, 'b'},
+        {"Equal",      no_argument,       nullptr, 'q'},
+        {"Warm",       required_argument, nullptr, 'h'},
+        {"Cold",       required_argument, nullptr, 'i'},
         {nullptr,       0,                 nullptr,  0} 
     };
 
     int opt;
-    while ((opt = getopt_long(argc, argv, "o:fr:cl:s:m:eg:w", long_options, nullptr)) != -1) {
+    while ((opt = getopt_long(argc, argv, "o:fr:cl:s:m:eg:qw:b:", long_options, nullptr)) != -1) {
         switch (opt) {
             case 'o':
                 OriginImage = new IMAGE(optarg);
@@ -71,9 +77,24 @@ int main(int argc, char *argv[]) {
                 if(atoi(optarg)) image->GaussianRGB(6, 0.8);
                 else             image->GaussianBlur(6, 0.8);
                 break;
+            case 'q':
+                cout << "-- Histogram equalization" << endl;
+                image->EqualizeHistogram();
+                break;
             case 'w':
                 cout << "-- White Balance" << endl;
-                image->WhiteBalance();
+                image->WhiteBalance(atoi(optarg));
+                break;
+            case 'b':
+                cout << "-- Saturation Enhancement" << endl;
+                image->Saturation(atof(optarg));
+            case 'h':
+                cout << "-- Turn image Warm" << endl;
+                image->Warm();
+                break;
+            case 'i':
+                cout << "-- Turn image Cold" << endl;
+                image->Cold();
                 break;
             default:
                 break;

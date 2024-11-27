@@ -43,6 +43,7 @@ public:
 
     // new image function
     void GaussianBlur(int k, double sigma);
+    void EqualizeHistogram();
 
     // Add new image operation here
     void Flip();
@@ -53,9 +54,10 @@ public:
     void MedianFilter(int);
     void GaussianRGB(int k, double sigma);
     void SSIM(IMAGE*);
-    void AdaptiveLocalNoiseReduction(int windowSize, double noiseVariance);
-    void WhiteBalance();
-
+    void WhiteBalance(int);
+    void Saturation(float);
+    void Warm();
+    void Cold();
 
 };
 
